@@ -1,8 +1,6 @@
-import test from 'node:test';
-
 const fs = require('fs')
 
-export default class ProductManager {
+class ProductManager {
   #path;
 
   constructor(path) {
@@ -135,7 +133,7 @@ export default class ProductManager {
 
 //-------------------------------------------- tests -----------------------------------
 
-/*
+
 try
 {
 
@@ -189,4 +187,4 @@ catch(err)
 {
   console.error(err);
 }
-*/
+
