@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-class ProductManager {
+export default class ProductManager {
   #path;
 
   constructor(path) {
@@ -133,7 +133,7 @@ class ProductManager {
 
 //-------------------------------------------- tests -----------------------------------
 
-
+/*
 try
 {
 
@@ -187,4 +187,4 @@ catch(err)
 {
   console.error(err);
 }
-
+*/
