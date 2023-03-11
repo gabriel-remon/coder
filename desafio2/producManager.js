@@ -1,12 +1,24 @@
-const fs = require('fs')
+import  fs  from 'fs';
 
 export default class ProductManager {
-  #path;
 
+  #path;
+/**
+ * instancia de la clase ProductManager, si no se pasa un path por parametro se 
+ * cargara por defecto "./productos.json"
+ * @param {string} path - path donde se guardaran todos los productos
+ */
   constructor(path) {
     this.#path= ( path ? path : "./productos.json")
   }
-
+/**
+ * agrega un producto a la lista de productos guardada enel path validando que 
+ * el producto tenga 'title','description','price','thumbnail','code','stock' , 
+ * que no tenga ningun campo vacio y que el campo code no se repita en los productos
+ * guardados. tambien le asigna un id
+ * @param {object} product - producto que se agregara a la lista 
+ * @returns retorna el id que se cargo y si no fue posible retorna -1
+ */
   addProduct = async (product) => {
     let id = 1;
 
@@ -28,11 +40,21 @@ export default class ProductManager {
     }
 
   }
+
+  /**
+   * valida que el "code" de produc no sea el mismo que ninguno de los productos guardados
+   * si excluir no es undefined toma como valido que se pueda cargar un nuevo producto con un 
+   * "code" repetido
+   * @param {object} product -producto que se evaluara
+   * @param {object} products -lista de productos
+   * @param excluir 
+   * @returns true - si el producto es valido. false - si no lo es
+   */
   #validarCodigo = (product, products, excluir) => {
 
     let retorno = true
     products.forEach(element => {
-      if (element.code === product.code && !( typeof excluir !=="undefined" && element.code === excluir))
+      if (element.code === product.code && !( excluir  && element.code === excluir))
       {
         retorno = false
         return;
@@ -43,15 +65,17 @@ export default class ProductManager {
   }
 
 
-
+/**
+ * valida que el prodicto tenga los campos requeridos y que no tenga propiedades con valor 
+ * undefined o string vacio
+ * @param {object} product - producto a evaluar
+ * @returns true - si el producto cumple con las condiciones. false - si no las cumple
+ */
   #validarFormato = (product) => {
     
     const validacion= ['title','description','price','thumbnail','code','stock']
     const keys = Object.keys(product)
     const values = Object.values(product).map(element=>{return typeof element === "string"?  element.trim(): element})
-    // if (keys.includes('title') && keys.includes('description') && keys.includes('price') && 
-    //     keys.includes('thumbnail') && keys.includes('code') && keys.includes('stock') &&
-    //     keys.length===6)
     if(keys.length===validacion.length && 
       validacion.every(element=>keys.includes(element))&& 
       values.every(element=>element))
@@ -59,6 +83,11 @@ export default class ProductManager {
     return false
   }
 
+/**
+ * lee la lista de productos del path guardado y la retorna, si no existe el archivo 
+ * o si el archivo esta vacio retorna un array vacio 
+ * @returns lista de productos o array vacio
+ */
   getProducts = async (_) => {
     if (fs.existsSync(this.#path) && fs.statSync(this.#path).size)  {
       try {
@@ -75,6 +104,12 @@ export default class ProductManager {
     }
   }
 
+  /**
+   * buscar un producto dentro de la lista de productos guardada con el mismo id
+   * si lo encuentra devuelve el objeto del producto sino retorna "Not found"
+   * @param {int} id -id a buscar
+   * @returns objeto del producto encontrado o string "Not found" 
+   */
   getProductById = async (id) => {
     try {
       let retorno = "Not found";
@@ -88,6 +123,15 @@ export default class ProductManager {
     }
   }
 
+  /**
+   * busca un id dentro de la lista de productos, si lo encuentra cambia todo el contenido de 
+   * ese id (sin modificar el id) por los datos del producto enviado por parametro. tambien verifica
+   * lo mismo que addProduct solo que esta funcion permite que se ingrese un code existente si y solo si
+   * el producto que se cambiara comparte codigo con el nuevo producto
+   * @param {int} id - id que sera cambiado
+   * @param {object} product - producto que se guardara
+   * @returns id del producto cambiado - string "Not found" si no se encontro el id
+   */
   updateProduct = async (id, product) => {
     try {
       let products = await this.getProducts();
@@ -112,6 +156,11 @@ export default class ProductManager {
 
   }
 
+  /**
+   * busca un id en la lista de productos
+   * @param {int} id - id a eliminar
+   * @returns object - producto eliminado. string - "Not found"
+   */
   deleteProduct = async (id) => {
     try {
       let products = await this.getProducts();
@@ -130,61 +179,3 @@ export default class ProductManager {
   };
   
 }
-
-//-------------------------------------------- tests -----------------------------------
-
-/*
-try
-{
-
-  //instanciar productos y clase
-
-  let product1 = { title: "cafe", description: "Flavouring - Rum", price: 38, thumbnail: "Room 1760", code: 20, stock: 7 }
-  let product2 = { title: "mete", description: "Flavouring - Rum", price: 38, thumbnail: "Room 1760", code: 21, stock: 7 }
-  let product3 = { title: "tee", description: "Flavouring - Rum", price: 38, thumbnail: "Room 1760", code: 22, stock: 7 }
-  let product4 = { title: "tee", description: "Flavouring - Rum", price: 38, thumbnail: "Room 1760", code: 23, stock: 7 }
-  let product5 = { title: "tee", description: "Flavouring - Rum", price: 38, thumbnail: "Room 1760", code: 24, stock: 7 }
-  let productMod = { title: "modificado22", description: "modificado", price: 38, thumbnail: "modificado", code: 20, stock: 7 }
-  const productManager = new ProductManager();
-
-
-  (async () => {
-    //test para ver si retorna un array vacio
-    console.log("Llamada sin datos")
-    console.log(await productManager.getProducts())
-
-    //test para saber si agrega un producto
-    await productManager.addProduct(product1)>0?console.log(`producto agregado`):console.log("no se pudo agregar")
-    console.log("lista de productos")
-    console.log(await productManager.getProducts())
-
-    //test para ver que no vuelva a agregar un producto con el mismo code
-    await productManager.addProduct(product1)>0?console.log(`producto agregado`):console.log("no se pudo agregar")
-    console.log("lista de productos")
-    console.log(await productManager.getProducts())
-
-    //test para que agregue 4 productos mas  
-    await productManager.addProduct(product2)>0?console.log(`producto agregado`):console.log("no se pudo agregar")
-    await productManager.addProduct(product3)>0?console.log(`producto agregado`):console.log("no se pudo agregar")
-    await productManager.addProduct(product4)>0?console.log(`producto agregado`):console.log("no se pudo agregar")
-    await productManager.addProduct(product5)>0?console.log(`producto agregado`):console.log("no se pudo agregar")
-    console.log("lista de productos")
-    console.log(await productManager.getProducts())
-    
-    //test para que imprima un solo id
-    console.log("producto con id 2 =")
-    console.log(await productManager.getProductById(2))
-    
-    //test para eliminar el id anterior
-    console.log(await productManager.deleteProduct(2))
-
-    //test para modificar el producto con id 1
-    let mod = await productManager.updateProduct(1,productMod)
-    console.log(mod)
-  })();
-}
-catch(err)
-{
-  console.error(err);
-}
-*/
