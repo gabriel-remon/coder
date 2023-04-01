@@ -25,8 +25,10 @@ export default class ProductManager {
     try {
       let products = await this.getProducts();
       if (products.length > 0) id = products[products.length - 1].id + 1;
-      
+
       if (this.#validarFormato(product) && this.#validarCodigo(product, products)) {
+        
+        console.log('creando product')
         product.id = id;
         products.push(product);
         await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2))
@@ -72,10 +74,15 @@ export default class ProductManager {
  * @returns true - si el producto cumple con las condiciones. false - si no las cumple
  */
   #validarFormato = (product) => {
+    
+    
     delete product.id
     const validacion= ['title','description','price','thumbnails','code','stock','status','category']
     const keys = Object.keys(product)
     const values = Object.values(product).map(element=>{return typeof element === "string"?  element.trim(): element})
+    
+    //if(typeof product.thumbnails  === 'undefined') product.thumbnails  = "sin fotos"
+    
     if(keys.length===validacion.length && 
       validacion.every(element=>keys.includes(element))&& 
       values.every(element=> typeof element !== 'undefined'))

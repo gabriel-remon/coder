@@ -1,7 +1,7 @@
 console.log("hola")
 const socket = io()
 
-const form = document.querySelector('#product-form');
+const form = document.querySelector('form')
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();

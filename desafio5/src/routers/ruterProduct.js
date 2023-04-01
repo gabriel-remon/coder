@@ -6,6 +6,7 @@ const productManager = new ProductManager('./utils/products.json')
 
 const mid1 = (req,res,next)=>{
   const body = req.body
+  if(typeof body.thumbnails  === 'undefined') body.thumbnails  = "sin fotos"
   if(typeof body.title === "string" &&
   typeof body.description === "string" &&
   typeof body.code === "string" &&
@@ -14,7 +15,7 @@ const mid1 = (req,res,next)=>{
   typeof body.category === "string" && 
   (typeof body.thumbnails === "string" || !body.thumbnails) )
   {
-    body.status=JSON.parse(body.status)
+    if(body.status)body.status=JSON.parse(body.status)
     if(typeof req.body.status !== 'boolean') req.body.status=true
     req.body.product = {title: body.title,description: body.description, code: body.code, price: parseInt(body.price), 
                         status: req.body.status, 
@@ -58,8 +59,8 @@ ruterProducts.get('/', async (req, res) =>{
    
    ruterProducts.post('/',mid1,async (req,res)=>{
     try{
-
       const id = await productManager.addProduct(req.body.product)
+      console.log(id)
       if(id>0)
       {
         res.render('realTimeProducts',{products: await productManager.getProducts()})
