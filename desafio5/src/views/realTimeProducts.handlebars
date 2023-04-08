@@ -11,16 +11,20 @@
   </thead>
   <tbody>
     {{#each products}}
-    <tr>
+    <tr >
       <td>{{this.title}}</td>
       <td>{{this.description}}</td>
       <td>{{this.price}}</td>
       <td>{{this.stock}}</td>
       <td>{{this.code}}</td>
+      <td><button idProduct={{this.id}} class="btn-eliminar" >Eliminar</button></td>
+      <td><button idProduct={{this.id}} class="btn-modificar" >Modificar</button></td>
     </tr>
     {{/each}}
   </tbody>
   </table>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 <script src="/socket.io/socket.io.js"></script>
 <script src="/index.js"></script>

@@ -6,7 +6,7 @@ const productManager = new ProductManager("./utils/products.json")
 
 
 viewsRouter.get('/', async (req, res) => {
-    const products = await productManager.getProducts()
+    const products = await productManager.getProductsEnable()
     
     res.render('realTimeProducts',{products: products})
 })

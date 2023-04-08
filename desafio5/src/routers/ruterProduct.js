@@ -1,5 +1,6 @@
 import express from 'express';
 import ProductManager from '../utils/productManager.js';
+import app from '../app.js';
 
 const ruterProducts = express.Router();
 const productManager = new ProductManager('./utils/products.json')
@@ -60,13 +61,15 @@ ruterProducts.get('/', async (req, res) =>{
    ruterProducts.post('/',mid1,async (req,res)=>{
     try{
       const id = await productManager.addProduct(req.body.product)
-      console.log(id)
       if(id>0)
       {
-        res.render('realTimeProducts',{products: await productManager.getProducts()})
+        
+        app.io.emit('nuevo-producto', { title: req.body.product.title, price:req.body.product.price})
+        //return res.render('realTimeProducts',{products: await productManager.getProductsEnable()})
         return res.status(200).send(`Producto agregado con id: ${id}`)
       }
-      res.status(500).send('No se pudo cargar el producto')
+      
+      return res.status(500).send('No se pudo cargar el producto')
     }  
     catch(err)
     {
@@ -77,11 +80,11 @@ ruterProducts.get('/', async (req, res) =>{
 
    ruterProducts.put('/:id',mid1,async(req,res)=>{
     try{
-      
       const id = await productManager.updateProduct(req.params.id,req.body.product)
 
       if(typeof id === 'number')
       {
+        app.io.emit('producto-actualizado',{id:id})
         return res.status(200).send(`Producto ${id} modificado con exito`)
       }
       res.status(500).send(id)
@@ -96,13 +99,16 @@ ruterProducts.get('/', async (req, res) =>{
 
    ruterProducts.delete('/:id', async(req,res)=>{
     try{
-
-      const id = await productManager.deleteProduct(req.params.id)
-      if(typeof id === 'number')
+      console.log(req.params.id)
+      const product = await productManager.deleteProduct(req.params.id)
+      
+      if( product !== "Not found")
       {
-        return res.status(200).send(`Producto ${id} eliminado con exito`)
+        app.io.emit('producto-eliminado',{title:product.title})
+        console.log('pase')
+        return res.status(200).send(`Producto ${product.id} eliminado con exito`)
       }
-      res.status(500).send(id)
+      res.status(500).send(product)
     }  
     catch(err)
     {

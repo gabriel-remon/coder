@@ -56,6 +56,7 @@ export default class ProductManager {
 
     let retorno = true
     products.forEach(element => {
+       
       if (element.code === product.code && !( excluir  && element.code === excluir))
       {
         retorno = false
@@ -112,6 +113,13 @@ export default class ProductManager {
     }
   }
 
+  getProductsEnable = async (_) =>{
+
+    const products = await this.getProducts();
+    
+    return products.filter(element=> element.status === true)
+  }
+
   /**
    * buscar un producto dentro de la lista de productos guardada con el mismo id
    * si lo encuentra devuelve el objeto del producto sino retorna "Not found"
@@ -148,6 +156,7 @@ export default class ProductManager {
       let products = await this.getProducts();
       
       const productId= products.findIndex(product => product.id === id)
+      
       if(productId >-1)
       {
        // console.log(product)
@@ -181,9 +190,10 @@ export default class ProductManager {
       const productId = products.findIndex(product => product.id === id)
   
       if (productId >-1) {
-         const producDelet = products.splice(productId, 1);
+         //const producDelet = products.splice(productId, 1);
+        products[productId].status = false;
         await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2));
-        return producDelet;
+        return products[productId];
       }
   
       return "Not found";
