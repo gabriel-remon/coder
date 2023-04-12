@@ -1,117 +1,73 @@
-console.log("hola")
 const socket = io();
-const form = document.getElementById("form-product")
-const button = document.getElementById("button-submit")
-const table = document.querySelector('table')
+const tbody = document.querySelector('table tbody')
 
+const addProduc= product=>{
+  const tr = document.createElement('tr')
+  tr.setAttribute("idProduct", product.id);
+  
+  for (let [key, element] of Object.entries(product)) {
+    if(key === 'title' || key === 'description'|| key === 'price'|| key === 'stock'|| key === 'code')
+    {
+      const td = document.createElement('td')
+      td.textContent = element;
+      tr.appendChild(td);
+    }
+  }
+  return tr
+}
 
+//emit en linea 89 archivo  src/routers/ruterProduct.js
 socket.on('producto-actualizado',async data=>{
-  await Swal.fire({
-    title: `Producto id ${data.id} actualizado` ,
-    icon: 'success',
-    time: 1500
-  })
-  location.reload();
-  })
+  for(let i=0; i<tbody.rows.length;i++)
+  {
+   if(tbody.rows[i].getAttribute('idProduct') == data.id)
+    {
+      tbody.replaceChild(addProduc(data.product), tbody.rows[i]);
+      await Swal.fire({
+        title: 'Producto actualizado',
+        text: `producto: ${data.product.title}`
+      })
+      break;
+    }
+  }
+})
 
+//emit en linea 69 archivo  src/routers/ruterProduct.js
 socket.on('nuevo-producto',async data=>{
+tbody.appendChild(addProduc(data.product))
+
 await Swal.fire({
   title: 'Nuevo producto',
-  text: `producto:${data .title}, precio: $${data.price}`,
-  icon: 'success',
-  time: 1500
+  text: `producto:${data.product.title}, precio: $${data.product.price}`,
+  icon: 'success'
 })
-location.reload();
+  
 })
 
+//emit en linea 109 archivo  src/routers/ruterProduct.js
 socket.on('producto-eliminado',async data=>{
-  await Swal.fire({
-    title: 'Producto eliminado',
-    text: `producto: ${data.title}`,
-    time: 1500
-  })
-  location.reload();
-  })
-
-table.addEventListener('click',e=>{
-  const title = form.elements.title.value;
-  const description = form.elements.description.value;
-  const price = form.elements.price.value;
-  const code = form.elements.code.value;
-  const stock = form.elements.stock.value;
-  const category = form.elements.category.value;
-
-  if(e.target.hasAttribute('idProduct') &&e.target.classList.contains("btn-modificar"))
+  for(let i=0; i<tbody.rows.length;i++)
   {
-    fetch(`/products/${e.target.getAttribute('idProduct')}`, {
-      method: 'PUT',
-      body: JSON.stringify({title, description, price, stock, code,category}),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((res) => {
-      if(res.status===500)
-      Swal.fire({
-        title: 'No fue posible actualizar el producto',
-        icon: 'error',
-        time: 1500
+    if(tbody.rows[i].getAttribute('idProduct') == data.id)
+    {
+      tbody.removeChild(tbody.rows[i])
+
+      await Swal.fire({
+        title: 'Producto eliminado',
+        text: `producto: ${data.title}`
       })
-    })
-    .catch((err)=>{
-      console.error(err);
-    })
-  }
-  if(e.target.hasAttribute('idProduct') &&e.target.classList.contains("btn-eliminar"))
-  {
-
-  fetch(`/products/${e.target.getAttribute('idProduct')}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json'
+      break;
     }
-  })
-  .then((res) => {
-    if(res.status===500)
-    Swal.fire({
-      title: 'No fue posible eliminar el producto',
-      icon: 'error',
-      time: 1500
-    })
-  })
-  .catch((err)=>{
-    console.error(err);
-  })
   }
-  
 })
 
-button.addEventListener('click', (e) => {
- 
-  const title = form.elements.title.value;
-  const description = form.elements.description.value;
-  const price = form.elements.price.value;
-  const code = form.elements.code.value;
-  const stock = form.elements.stock.value;
-  const category = form.elements.category.value;
+//emit en linea 15 archivo  src/routers/view.listProducts.js
+socket.on('load-list',data=>{
+  while (tbody.firstChild) { 
+    tbody.removeChild(tbody.firstChild); 
+  }
+  data.products.forEach(product => {
+    tbody.appendChild(addProduc(product));
+  });
 
-  fetch('/products', {
-    method: 'POST',
-    body: JSON.stringify({title, description, price, stock, code,category}),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then((res) => {
-    if(res.status===500)
-    Swal.fire({
-      title: 'No fue posible cargar el producto',
-      icon: 'error',
-      time: 1500
-    })
-  })
-  .catch((err)=>{
-    console.error(err);
-  })
-  
-});
+})

@@ -1,8 +1,9 @@
 import express from 'express';
 import CartManager from '../utils/cartManager.js';
+import { __dirname } from '../utils.js';
 
 const ruterCarts = express.Router();
-const cartManager = new CartManager('./utils/products.json','./utils/carts.json');
+const cartManager = new CartManager(__dirname+'/utils/products.json',__dirname+'/utils/carts.json');
 
 ruterCarts.post('/', async (req, res) =>{
   try

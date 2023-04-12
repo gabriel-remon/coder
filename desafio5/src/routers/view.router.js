@@ -1,14 +1,14 @@
 import { Router } from "express";
 import ProductManager from "../utils/productManager.js";
+import { __dirname } from "../utils.js";
 
-const viewsRouter = Router()
-const productManager = new ProductManager("./utils/products.json")
+const routerViews = Router()
+const productManager = new ProductManager(__dirname+"/utils/products.json")
 
 
-viewsRouter.get('/', async (req, res) => {
+routerViews.get('/', async (req, res) => {
     const products = await productManager.getProductsEnable()
-    
-    res.render('realTimeProducts',{products: products})
+    res.render('index',{products: products})
 })
 
-export default viewsRouter
+export default routerViews

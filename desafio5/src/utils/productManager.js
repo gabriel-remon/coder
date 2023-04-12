@@ -28,7 +28,6 @@ export default class ProductManager {
 
       if (this.#validarFormato(product) && this.#validarCodigo(product, products)) {
         
-        console.log('creando product')
         product.id = id;
         products.push(product);
         await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2))
@@ -98,6 +97,7 @@ export default class ProductManager {
  * @returns lista de productos o array vacio
  */
   getProducts = async (_) => {
+    
     if (fs.existsSync(this.#path) && fs.statSync(this.#path).size)  {
       try {
         let products = await fs.promises.readFile(this.#path);

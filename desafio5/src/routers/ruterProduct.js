@@ -1,9 +1,10 @@
 import express from 'express';
 import ProductManager from '../utils/productManager.js';
 import app from '../app.js';
+import { __dirname } from '../utils.js';
 
 const ruterProducts = express.Router();
-const productManager = new ProductManager('./utils/products.json')
+const productManager = new ProductManager(__dirname+'/utils/products.json')
 
 const mid1 = (req,res,next)=>{
   const body = req.body
@@ -35,6 +36,7 @@ ruterProducts.get('/', async (req, res) =>{
       const products = await productManager.getProducts();
       if(req.query.limit)
            return res.send(products.splice(0,req.query.limit))
+      
       res.status(200).json(products)
 
     }
@@ -64,7 +66,7 @@ ruterProducts.get('/', async (req, res) =>{
       if(id>0)
       {
         
-        app.io.emit('nuevo-producto', { title: req.body.product.title, price:req.body.product.price})
+        app.io.emit('nuevo-producto', {product: req.body.product})
         //return res.render('realTimeProducts',{products: await productManager.getProductsEnable()})
         return res.status(200).send(`Producto agregado con id: ${id}`)
       }
@@ -84,7 +86,7 @@ ruterProducts.get('/', async (req, res) =>{
 
       if(typeof id === 'number')
       {
-        app.io.emit('producto-actualizado',{id:id})
+        app.io.emit('producto-actualizado',{product:req.body.product, id:id})
         return res.status(200).send(`Producto ${id} modificado con exito`)
       }
       res.status(500).send(id)
@@ -99,13 +101,13 @@ ruterProducts.get('/', async (req, res) =>{
 
    ruterProducts.delete('/:id', async(req,res)=>{
     try{
-      console.log(req.params.id)
+
       const product = await productManager.deleteProduct(req.params.id)
       
       if( product !== "Not found")
       {
-        app.io.emit('producto-eliminado',{title:product.title})
-        console.log('pase')
+        app.io.emit('producto-eliminado',{title:product.title, id:product.id })
+
         return res.status(200).send(`Producto ${product.id} eliminado con exito`)
       }
       res.status(500).send(product)

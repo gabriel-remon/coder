@@ -2,9 +2,9 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import {__dirname} from './utils.js';
 import {Server} from 'socket.io'
-import viewsRouter from "./routers/view.router.js";
+import routerViews from "./routers/view.router.js";
 import ruterProducts from './routers/ruterProduct.js';
-
+import routerListProducts from './routers/view.listProducts.js';
 import bodyParser from 'body-parser';
 
 const app = express();
@@ -21,15 +21,16 @@ app.set('views',__dirname+'/views');
 app.set('view engine','handlebars');
 app.use(express.static(__dirname+'/public'))
 
-app.use('/',viewsRouter)
+app.use('/',routerViews)
 app.use('/products',ruterProducts)
+app.use('/realTimeProducts',routerListProducts)
 
-io.on('connection', (socket)=> {
-    console.log('Usuario conectado');
-    socket.on('evento-producto',data=>{
-        console.log(data)
+
+io.on('connection',socket =>{
+    console.log('Nuevo cliente conectado id: '+socket.id);
+    socket.on('disconnect', _ =>{
+        console.log('cliente desconectado id: '+socket.id);
     })
-    io.emit('creado','envie los datos')
 })
 
 
