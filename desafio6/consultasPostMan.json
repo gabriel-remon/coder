@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "164ff295-b030-4d43-b685-d1e77c962258",
+		"name": "desafio5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22954644"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/products",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "title",
+						"value": "pepe",
+						"type": "text"
+					},
+					{
+						"key": "description",
+						"value": "pepe",
+						"type": "text"
+					},
+					{
+						"key": "code",
+						"value": "21pepe",
+						"type": "text"
+					},
+					{
+						"key": "price",
+						"value": "20",
+						"type": "text"
+					},
+					{
+						"key": "stock",
+						"value": "20",
+						"type": "text"
+					},
+					{
+						"key": "category",
+						"value": "pepe",
+						"type": "text"
+					},
+					{
+						"key": "status",
+						"value": "true",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "rueda de camion",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "es una rueda",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "rueda80",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "150000",
+							"type": "text"
+						},
+						{
+							"key": "stock",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "camiones",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/products/17",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/17",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/products/17",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "soldador de 20W",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "suelda bien",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "soldar320",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "stock",
+							"value": "20",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "electronica",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/products/17",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"17"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
