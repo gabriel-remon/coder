@@ -1,13 +1,19 @@
 import express from 'express';
-import ProductManager from '../utils/productManager.js';
+//import ProductManager from '../utils/productManager.js';
 import app from '../app.js';
 import { __dirname } from '../utils.js';
 
+import ProductManager from '../dao/mongo/products.mongo.js';
+import mongoose from 'mongoose';
+
 const ruterProducts = express.Router();
-const productManager = new ProductManager(__dirname+'/utils/products.json')
+const productManager = new ProductManager()
 
 const mid1 = (req,res,next)=>{
+
   const body = req.body
+  
+  
   if(typeof body.thumbnails  === 'undefined') body.thumbnails  = "sin fotos"
   if(typeof body.title === "string" &&
   typeof body.description === "string" &&
@@ -63,7 +69,7 @@ ruterProducts.get('/', async (req, res) =>{
    ruterProducts.post('/',mid1,async (req,res)=>{
     try{
       const id = await productManager.addProduct(req.body.product)
-      if(id>0)
+      if(mongoose.Types.ObjectId.isValid(id))
       {
         
         app.io.emit('nuevo-producto', {product: req.body.product})
@@ -84,7 +90,7 @@ ruterProducts.get('/', async (req, res) =>{
     try{
       const id = await productManager.updateProduct(req.params.id,req.body.product)
 
-      if(typeof id === 'number')
+      if(mongoose.Types.ObjectId.isValid(id))
       {
         app.io.emit('producto-actualizado',{product:req.body.product, id:id})
         return res.status(200).send(`Producto ${id} modificado con exito`)
@@ -104,11 +110,11 @@ ruterProducts.get('/', async (req, res) =>{
 
       const product = await productManager.deleteProduct(req.params.id)
       
-      if( product !== "Not found")
+      if(mongoose.Types.ObjectId.isValid(product._id))
       {
-        app.io.emit('producto-eliminado',{title:product.title, id:product.id })
+        app.io.emit('producto-eliminado',{title:product.title, id:product._id })
 
-        return res.status(200).send(`Producto ${product.id} eliminado con exito`)
+        return res.status(200).send(`Producto ${product._id} eliminado con exito`)
       }
       res.status(500).send(product)
     }  

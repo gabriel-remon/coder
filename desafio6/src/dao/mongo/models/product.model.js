@@ -1,4 +1,3 @@
-import { strict } from "assert";
 import mongoose from "mongoose";
 
 const collection = 'products'
@@ -11,7 +10,7 @@ thumbnails: String,
 code:{type: String, required: true, unique: true},
 stock:{type: Number, required: true},
 status:{type: Boolean, default: true},
-categor:{type: String, required: true}
+category:{type: String, required: true}
 })
 
 export const productModel = new mongoose.model(collection,schema)

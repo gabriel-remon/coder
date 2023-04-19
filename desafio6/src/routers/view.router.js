@@ -1,14 +1,27 @@
 import { Router } from "express";
-import ProductManager from "../utils/productManager.js";
+import ProductManager from "../dao/mongo/products.mongo.js";
 import { __dirname } from "../utils.js";
 
 const routerViews = Router()
-const productManager = new ProductManager(__dirname+"/utils/products.json")
+const productManager = new ProductManager()
 
 
 routerViews.get('/', async (req, res) => {
     const products = await productManager.getProductsEnable()
-    res.render('index',{products: products})
+    let productSeguros = [];
+    products.forEach(element => {
+        productSeguros.push(
+            {title: element.title,
+            description: element.description,
+            price: element.price,
+            stock: element.stock,
+            code: element.code,
+            id: element._id
+            })
+    });
+
+    res.render('index',{products: productSeguros})
+
 })
 
 export default routerViews

@@ -1,14 +1,17 @@
 import express from 'express';
-import CartManager from '../utils/cartManager.js';
+//import CartManager from '../utils/cartManager.js';
 import { __dirname } from '../utils.js';
 
+import CartManager from '../dao/mongo/carts.mongo.js'
+import mongoose from 'mongoose';
+
 const ruterCarts = express.Router();
-const cartManager = new CartManager(__dirname+'/utils/products.json',__dirname+'/utils/carts.json');
+const cartManager = new CartManager();
 
 ruterCarts.post('/', async (req, res) =>{
   try
     {
-      const id = await cartManager.addCart(req.body.products)
+      const id = await cartManager.addCart()
       res.status(200).send(`carrito creado con exito. id=${id} `)
     }
      catch(err)
@@ -34,7 +37,7 @@ ruterCarts.post('/', async (req, res) =>{
    ruterCarts.post('/:cid/products/:pid',async (req,res)=>{
     try{
       const retorno = await cartManager.addProduc(req.params.pid,req.params.cid)
-      if(retorno !== "Not found")
+      if(mongoose.Types.ObjectId.isValid(retorno))
       {
          res.status(200)
       }

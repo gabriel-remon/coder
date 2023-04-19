@@ -1,10 +1,12 @@
 import { Router } from "express";
-import ProductManager from "../utils/productManager.js";
+//import ProductManager from "../utils/productManager.js";
 import app from "../app.js";
 import { __dirname } from "../utils.js";
 
+import ProductManager from "../dao/mongo/products.mongo.js";
+
 const routerListProducts = Router()
-const productManager = new ProductManager(__dirname+"/utils/products.json")
+const productManager = new ProductManager()
 
 
 routerListProducts.get('/', async (req, res) => {

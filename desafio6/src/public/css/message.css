@@ -1,0 +1,51 @@
+.message-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .message {
+    background-color: #F2F2F2;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .message-date {
+    text-align: right;
+    color: #AAA;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .message-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .message-input input[type="text"] {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 5px;
+  }
+  
+  .message-input button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .message-input button:hover {
+    background-color: #3E8E41;
+  }
+  

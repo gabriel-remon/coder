@@ -3,7 +3,7 @@ const tbody = document.querySelector('table tbody')
 
 const addProduc= product=>{
   const tr = document.createElement('tr')
-  tr.setAttribute("idProduct", product.id);
+  tr.setAttribute("idProduct", product._id);
   
   for (let [key, element] of Object.entries(product)) {
     if(key === 'title' || key === 'description'|| key === 'price'|| key === 'stock'|| key === 'code')
@@ -20,7 +20,7 @@ const addProduc= product=>{
 socket.on('producto-actualizado',async data=>{
   for(let i=0; i<tbody.rows.length;i++)
   {
-   if(tbody.rows[i].getAttribute('idProduct') == data.id)
+   if(tbody.rows[i].getAttribute('idProduct') == data._id)
     {
       tbody.replaceChild(addProduc(data.product), tbody.rows[i]);
       await Swal.fire({
@@ -48,7 +48,7 @@ await Swal.fire({
 socket.on('producto-eliminado',async data=>{
   for(let i=0; i<tbody.rows.length;i++)
   {
-    if(tbody.rows[i].getAttribute('idProduct') == data.id)
+    if(tbody.rows[i].getAttribute('idProduct') == data._id)
     {
       tbody.removeChild(tbody.rows[i])
 

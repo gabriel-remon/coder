@@ -1,7 +1,5 @@
-import  fs  from 'fs';
-import mongoose, { Error } from 'mongoose'
 import { productModel } from './models/product.model.js';
-import { error } from 'console';
+import { ObjectId } from 'mongodb';
 
 export default class ProductManager {
 /**
@@ -9,8 +7,7 @@ export default class ProductManager {
  * cargara por defecto "./productos.json"
  * @param {string} path - path donde se guardaran todos los productos
  */
-  constructor(collection) {
-    this.#collection= ( collection ? collection : "products")
+  constructor() {
   }
 /**
  * agrega un producto a la lista de productos guardada enel path validando que 
@@ -18,53 +15,33 @@ export default class ProductManager {
  * que no tenga ningun campo vacio y que el campo code no se repita en los productos
  * guardados. tambien le asigna un id
  * @param {object} product - producto que se agregara a la lista 
- * @returns retorna el id que se cargo y si no fue posible retorna -1
+ * @returns -1: formato invalido;
+ *          -2: ya existe un producto con ese codigo
+ *          -3: error de conexcion con basa de datos
+ *          cualquier otro valor: id del producto guardado con exito
  */
   addProduct = async (product) => {
-    let id = 1;
-
+    
     try {
-      let products = await this.getProducts();
-      if (products.length > 0) id = products[products.length - 1].id + 1;
 
-      if (this.#validarFormato(product) && this.#validarCodigo(product, products)) {
-        
-        product.id = id;
-        products.push(product);
-        await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2))
-        return id
+      if(! await this.#validarFormato(product))
+      {
+        return -1;
       }
 
-      return -1
+      if(await productModel.find({code: product.code}).exec().length > 0){
+        return -2
+      }
+
+      const newProduct = await productModel(product).save()
+      return newProduct._id;
+
     }
     catch (err) {
       console.error(err)
+      return -3
     }
 
-  }
-
-  /**
-   * valida que el "code" de produc no sea el mismo que ninguno de los productos guardados
-   * si excluir no es undefined toma como valido que se pueda cargar un nuevo producto con un 
-   * "code" repetido
-   * @param {object} product -producto que se evaluara
-   * @param {object} products -lista de productos
-   * @param excluir 
-   * @returns true - si el producto es valido. false - si no lo es
-   */
-  #validarCodigo = (product, products, excluir) => {
-
-    let retorno = true
-    products.forEach(element => {
-       
-      if (element.code === product.code && !( excluir  && element.code === excluir))
-      {
-        retorno = false
-        return;
-      }
-      
-    })
-    return retorno;
   }
 
 
@@ -74,45 +51,35 @@ export default class ProductManager {
  * @param {object} product - producto a evaluar
  * @returns true - si el producto cumple con las condiciones. false - si no las cumple
  */
-  #validarFormato = (product) => {
+  #validarFormato = async (product) => {
     
-    
-    delete product.id
-    const validacion= ['title','description','price','thumbnails','code','stock','status','category']
-    const keys = Object.keys(product)
-    const values = Object.values(product).map(element=>{return typeof element === "string"?  element.trim(): element})
-    
-    //if(typeof product.thumbnails  === 'undefined') product.thumbnails  = "sin fotos"
-    
-    if(keys.length===validacion.length && 
-      validacion.every(element=>keys.includes(element))&& 
-      values.every(element=> typeof element !== 'undefined'))
-      return true
-    return false
+    console.log(product)
+    try{
+      await productModel.validate(product)
+      return true 
+    }catch(_)
+    {
+      return false
+    }
   }
  
 
 /**
  * lee la lista de productos del path guardado y la retorna, si no existe el archivo 
  * o si el archivo esta vacio retorna un array vacio 
- * @returns lista de productos o array vacio
+ * @returns -1: error al leer la base de datos
+ *          array con los productos guardados;
  */
   getProducts = async (_) => {
     
     try {
-        let products = []
-        productModel.find({},function(err,products){
-          if(err){
-            products = err
-          }else
-          {
-            products = products
-          }
-        })
-        return products;
+
+      return await productModel.find().exec();
+      
       }
       catch (err) {
-        throw err;
+        console.log(err);
+        return -1
       }
     
   }
@@ -120,20 +87,14 @@ export default class ProductManager {
   getProductsEnable = async (_) =>{
 
     try {
-      let products = []
-      productModel.find({status:true},function(err,products){
-        if(err){
-          products = err
-        }else
-        {
-          products = products
-        }
-      })
-      return products;
-    }
-    catch (err) {
-      throw err;
-    }
+
+      return await productModel.find({status:true}).exec();
+      
+      }
+      catch (err) {
+        console.log(err);
+        return -1
+      }
   }
 
   /**
@@ -144,15 +105,14 @@ export default class ProductManager {
    */
   getProductById = async (id) => {
     try {
-      let retorno = "Not found";
-      let products = await this.getProducts();
-      id=parseInt(id)
-      if(products.length>0)
-      products.forEach((element) => {if (element.id === id) { retorno = element; return } })
-      return retorno;
+      if(!ObjectId.isValid(id))
+       return 0
+      return await productModel.findOne({_id:id})
+     
     }
     catch (err) {
       console.error(err)
+      return -1
     }
   }
 
@@ -167,29 +127,25 @@ export default class ProductManager {
    */
   updateProduct = async (id, product) => {
     try {
-      id=parseInt(id)
-      
-      let products = await this.getProducts();
-      
-      const productId= products.findIndex(product => product.id === id)
-      
-      if(productId >-1)
+      if(! await this.#validarFormato(product))
       {
-       // console.log(product)
-        if (this.#validarFormato(product) && this.#validarCodigo(product, products,products[productId].code)) 
-        {        
-          product.id=id;
-          products[productId]=product;
-          await fs.promises.writeFile(this.#path,JSON.stringify(products,null,2))
-          return id
-        }
+        return -1;
       }
-      
-        return "Not found"
+      const productUpdate = await this.getProductById(id);
+
+      if(!productUpdate){
+        return -2
+      }
+
+      if(productUpdate.code !== product.code  && await productModel.findOne({code:product.code}) ){
+        return -3;
+      }
+      return await productModel.updateOne({_id:id},product).exec()
       
     }
     catch (err) {
       console.error(err)
+      return -3
     }
 
   }
@@ -201,21 +157,38 @@ export default class ProductManager {
    */
   deleteProduct = async (id) => {
     try {
-      let products = await this.getProducts();
-      id=parseInt(id)
-      const productId = products.findIndex(product => product.id === id)
-  
-      if (productId >-1) {
-         //const producDelet = products.splice(productId, 1);
-        products[productId].status = false;
-        await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2));
-        return products[productId];
+
+      const product = await productModel.findOne({_id:id})
+
+      if(!product){
+        return -1
       }
-  
-      return "Not found";
+      product.status = false
+      await productModel.updateOne({_id:id},product)
+      return await this.getProductById(id)
+    
     } catch (err) {
       console.error(err);
+      return -2
     }
   };
+
+  discountProduct = async(id) =>{
+    try {
+
+      const product = await productModel.findOne({_id:id})
+
+      if(!product){
+        return -1
+      }
+      product.stock--
+      await productModel.updateOne({_id:id},product)
+      return 1
+    
+    } catch (err) {
+      console.error(err);
+      return -2
+    }
+  }
   
 }
