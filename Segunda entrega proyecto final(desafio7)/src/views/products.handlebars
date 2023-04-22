@@ -1,0 +1,34 @@
+<body>
+    <table>
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each data.docs}}
+    <tr >
+      <td>{{this.title}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.price}}</td>
+      <td>{{this.stock}}</td>
+      <td>{{this.code}}</td>
+      <td><button idProduct={{this._id}}> </button></td>
+    </tr>
+    {{/each}}
+  </tbody>
+  </table>
+
+  <div class="container">
+    <button id="btnAnterior"class="button">Pagina anterior</button>
+    <span class="text">pagina {{data.page}} de {{data.totalPages}}</span>
+    <button id="btnProxima" class="button">Proxima pagina</button>
+  </div>
+
+</body>
+<link href="css/products.css" rel="stylesheet">
+<script src="/products.js" ></script>
