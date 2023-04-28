@@ -1,3 +1,4 @@
+import async from 'hbs/lib/async.js';
 import { productModel } from './models/product.model.js';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
@@ -86,7 +87,7 @@ export default class ProductManager {
       
       //return await productModel.paginate(query,{limit:limit,page:page,sort:sort})
       //const retorno = productModel.aggregate([{$sort:{price:-1}}])
-      return await productModel.paginate(query,{limit:limit,page:page,sort:sort})
+      return await productModel.paginate(query,{limit:limit,page:page,sort:sort!==0?{price:sort}:null})
       
       }
       catch (err) {
@@ -226,4 +227,8 @@ export default class ProductManager {
     }
   }
   
+categorysProductsc=async ()=>{
+  return await productModel.distinct('category')
+}
+
 }

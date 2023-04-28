@@ -9,7 +9,7 @@ const validateListProducts = ()=>{
       return res.status(400).send('no se encontro la lista de productos en el body')
 
     products.forEach((element)=>{
-      if(!isNaN(element.quantity) || !ObjectId.isValid(element.idProduct) || Object.keys(element).length>=2)
+      if(isNaN(element.quantity) || !ObjectId.isValid(element.idProduct) || Object.keys(element).length>=2)
         return res.status(400).send('la lista de productos no esta en el formato especificado')
     })
   }catch(err)
@@ -22,25 +22,31 @@ const validateListProducts = ()=>{
 
 const validateQuantity = (req,res,next)=>{
   const {quantity} = req.body
-  if(!quantity || !isNaN(quantity))
+  if(!quantity || isNaN(quantity))
     return res.status(400).send('Invalid quantity property')
 
   next()
 }
 
 const validateGetProducts = (req,res,next)=>{
-  const {limit,page,query,sort} = req.params
-  if(!limit || !isNaN(limit))
-    req.params.limit=10;
+  let {limit,page,query,sort} = req.query
+  if(!limit || isNaN(limit))
+    req.query.limit=10;
   
-  if(!page || !isNaN(page))
-    req.params.page=1
 
-  if(!query)
-    req.params.query = {}
+  if(!page || isNaN(page))
+    req.query.page=1
+
+  if(!query || typeof query !== 'string')
+    req.query.query = undefined
+  else
+  req.query.query=req.query.query.replace('-'," ")
+
+  if(!isNaN(sort))
+    sort = parseInt(sort)
 
   if(sort!== 1 && sort!==-1)
-    req.params.sort=0
+    req.query.sort=0
   
     next()
 }

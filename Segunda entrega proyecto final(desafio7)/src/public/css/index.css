@@ -29,4 +29,9 @@ table {
       width: 100%;
     }
   }
-  
+  tfoot td {
+    font-weight: bold;
+    text-align: right;
+    border-top: 2px solid #4CAF50;
+    padding-top: 10px;
+  }

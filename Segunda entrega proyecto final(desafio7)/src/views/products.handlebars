@@ -1,34 +1,61 @@
 <body>
     <table>
-  <thead>
-    <tr>
-      <th>Título</th>
-      <th>Descripción</th>
-      <th>Precio</th>
-      <th>Stock</th>
-      <th>Code</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each data.docs}}
-    <tr >
-      <td>{{this.title}}</td>
-      <td>{{this.description}}</td>
-      <td>{{this.price}}</td>
-      <td>{{this.stock}}</td>
-      <td>{{this.code}}</td>
-      <td><button idProduct={{this._id}}> </button></td>
-    </tr>
-    {{/each}}
-  </tbody>
-  </table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data.payload}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.stock}}</td>
+                <td>{{this.code}}</td>
+                <td><button class="button" idProduct={{this._id}}> comprar </button></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 
-  <div class="container">
-    <button id="btnAnterior"class="button">Pagina anterior</button>
-    <span class="text">pagina {{data.page}} de {{data.totalPages}}</span>
-    <button id="btnProxima" class="button">Proxima pagina</button>
-  </div>
+    <div class="container">
+
+            {{#if data.hasPrevPage}}
+            <a id="btnAnterior" class="button" href={{data.prevLink}}> Pagina anterior</a>
+            {{/if}}
+            <span class="text">pagina {{data.page}} de {{data.totalPages}}</span>
+            {{#if data.hasNextPage}}
+            <a id="btnProxima" href={{data.nextLink}} class="button">Proxima pagina</a>
+            {{/if}}
+        
+    </div>
+
+            
+
+    <div class="container">
+        <form id="form-filter">
+            <label for="category">Categoría:</label>
+            <select name="category" id="category">
+                <option value="">Selecciona una categoría</option>
+                {{#each categorys}}
+                <option value={{this}}>{{this}}</option>
+                {{/each }}
+            </select>
+            <label for="price-sort">Ordenar por precio:</label>
+            <select name="price-sort" id="price-sort">
+                <option value="0">Selecciona un orden</option>
+                <option value="1">Menor a mayor</option>
+                <option value="-1">Mayor a menor</option>
+            </select>
+            <button class="button" >Buscar</button>
+        </form>
+    </div>
 
 </body>
+<script src="/products2.js"></script>
 <link href="css/products.css" rel="stylesheet">
-<script src="/products.js" ></script>

@@ -41,4 +41,4 @@ content-type: application/json
 get http://localhost:8080/api/cart/64405cc51508a397f7c4f36d
 
 ###
-get http://localhost:8080/api/products/643efe611602f47420e2c4d5
+get http://localhost:8080/api/products/

@@ -17,12 +17,46 @@ const productManager = new ProductManager()
  */
 ruterProducts.get('/',validateGetProducts, async (req, res) => {
   try {
-    console.log('hola')
-    const {limit,page,query,sort} = req.params
-    return res.status(200).send(await productManager.getProductsIndex(limit,page,query,sort))
+    const {limit,page,query,sort} = req.query
+    const categorys =await productManager.categorysProductsc()
+    const products = await productManager.getProductsIndex(limit,page,query?{category:query}:{},sort)
+
+    const product= products.docs.map(element=>{return {
+      title: element.title,
+      description: element.description,
+      price: element.price,
+      thumbnails:element.thumbnails,
+      code: element.code,
+      stock: element.stock,
+      status:element.status,
+      category:element.category,
+      _id: element._id
+    }})
+    
+    const respuesta={
+      status: 'success',
+      //payload: products.docs,
+      payload: product,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: ((products.hasPrevPage)?`${req.protocol}://${req.get('host')}${req.baseUrl}?limit=${limit}&page=${products.prevPage}&sort=${sort}${query?`&query=${query}`:""}`: null),
+      nextLink: ((products.hasNextPage)?`${req.protocol}://${req.get('host')}${req.baseUrl}?limit=${limit}&page=${products.nextPage}&sort=${sort}${query?`&query=${query}`:""}`: null)
+    }
+    categorys.map(element=>element=element.replace(/\s+/g, '-'))
+categorys.map(element=>element=element.replace(/\s+/g, '-'))
+ 
+    //return res.status(200).send(JSON.stringify(respuesta))
+    res.status(200).render('products',{data:respuesta, 
+                          categorys: categorys.map(element=>element=element.replace(/\s+/g, '-')),
+                          limit:product.limit,
+                          query:query?query.replace(/\s+/g, '-'):null})
   }
   catch (err) {
-    res.status(500).send(err)
+    res.status(500).send(JSON.stringify({status: 'error', payload: err}))
   }
 
 })

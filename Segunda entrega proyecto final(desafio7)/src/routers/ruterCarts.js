@@ -26,7 +26,22 @@ ruterCarts.post('/', async (req, res) => {
  */
 ruterCarts.get('/:id',validateObjetID, async (req, res) => {
   try {
-    res.status(200).send(await cartManager.getCartById(req.params.id))
+    const cart =await cartManager.getCartById(req.params.id)
+    let total=0
+    const render = cart.products.map(element => {
+      total +=element.quantity * element.idProduct.price
+      return{
+        title: element.idProduct.title,
+        description: element.idProduct.description,
+        price: element.idProduct.price,
+        category:element.idProduct.category,
+        subTotal:element.quantity * element.idProduct.price,
+        quantity:element.quantity
+      }
+
+    })
+    res.render('cart',{data:render, total:total})
+    //res.status(200).send(cart)
   }
   catch (err) {
     res.status(500).send(err)
@@ -42,6 +57,7 @@ ruterCarts.get('/:id',validateObjetID, async (req, res) => {
  */
 ruterCarts.post('/:cid/products/:pid',validateCartObjetID, async (req, res) => {
   try {
+    console.log('llegue')
     const retorno = await cartManager.addProduc(req.params.pid, req.params.cid)
     
     if (retorno.acknowledged) {

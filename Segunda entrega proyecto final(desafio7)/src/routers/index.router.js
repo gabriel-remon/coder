@@ -8,9 +8,9 @@ import ruterProducts from "./ruterProduct.js";
 const indexRouter = Router();
 
 indexRouter.use('/',routerViews)
-indexRouter.use('/api/products',ruterProducts)
+indexRouter.use('/products',ruterProducts)
 indexRouter.use('/realTimeProducts',routerListProducts)
 indexRouter.use('/chat',routerMessage)
-indexRouter.use('/api/cart',ruterCarts)
+indexRouter.use('/cart',ruterCarts)
 
 export default indexRouter

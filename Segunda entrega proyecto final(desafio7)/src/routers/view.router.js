@@ -2,7 +2,6 @@ import { Router } from "express";
 import ProductManager from "../dao/mongo/products.mongo.js";
 import { __dirname } from "../utils.js";
 
-
 /**
  * Router in charge of handling the static views of the application
  */

@@ -1,7 +1,9 @@
 .container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   }
+  
   
   .button {
     background-color: #4CAF50; /* Green */
@@ -24,4 +26,5 @@
   #desabilitado {
     display: none;
   }
+  
   
