@@ -7,7 +7,7 @@ import { __dirname } from './utils.js';
 import {objetConfig} from './utils/connect.mongo.js'
 
 const app = express();
-const PORT= 8080;
+const PORT= 8090;
 
 const httpServer = app.listen(PORT, (_)=> console.log(`Server iniciado en puerto ${PORT}`));
 app.io = new Server(httpServer);

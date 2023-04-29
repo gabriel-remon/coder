@@ -6,25 +6,25 @@ get http://localhost:8080/
 get http://localhost:8080/realTimeProducts/
 
 ####url para crear un nuevo carrito
-post http://localhost:8080/cart/
+post http://localhost:8080/api/cart/
 
 ####url que agrega un producto a un carrito previamente creado
-post http://localhost:8080/cart/64405cc51508a397f7c4f36d/products/643efe611602f47420e2c4d5
+post http://localhost:8080/api/cart/64405cc51508a397f7c4f36d/products/643efe611602f47420e2c4d5
 
 ###link para aceder al chat con socketServer
 post http://localhost:8080/chat/
 
 ###retorna los productos en la base de datos
-get  http://localhost:8080/products/
+get  http://localhost:8080/api/products/
 
 ###retorna un producto con un id detenrminado
-get  http://localhost:8080/products/643efe611602f47420e2c4d5/
+get  http://localhost:8080/api/products/643efe611602f47420e2c4d5/
 
 ###elimina de forma logica un producto, poniendo su status en false
-delete  http://localhost:8080/products/643efe611602f47420e2c4d5/
+delete  http://localhost:8080/api/products/643efe611602f47420e2c4d5/
 
 ###carga un nuevo producto en la base de datos
-post  http://localhost:8080/products/
+post  http://localhost:8080/api/products/
 content-type: application/json
 {
     "title": "Titulo de ejemplo",
@@ -38,7 +38,7 @@ content-type: application/json
 }
 
 ### consegir un carrito determinado 
-get http://localhost:8080/cart/64405cc51508a397f7c4f36d
+get http://localhost:8080/api/cart/64405cc51508a397f7c4f36d
 
 ###
-get http://localhost:8080/products/
+get http://localhost:8080/api/products/
