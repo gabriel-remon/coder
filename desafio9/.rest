@@ -1,0 +1,44 @@
+
+###lista de los productos (no se actualiza automaticamente)
+get http://localhost:8080/
+
+###lista en tiempo real de los productos manejada con socketServer
+get http://localhost:8080/realTimeProducts/
+
+####url para crear un nuevo carrito
+post http://localhost:8080/api/cart/
+
+####url que agrega un producto a un carrito previamente creado
+post http://localhost:8080/api/cart/64405cc51508a397f7c4f36d/products/643efe611602f47420e2c4d5
+
+###link para aceder al chat con socketServer
+post http://localhost:8080/chat/
+
+###retorna los productos en la base de datos
+get  http://localhost:8080/api/products/
+
+###retorna un producto con un id detenrminado
+get  http://localhost:8080/api/products/643efe611602f47420e2c4d5/
+
+###elimina de forma logica un producto, poniendo su status en false
+delete  http://localhost:8080/api/products/643efe611602f47420e2c4d5/
+
+###carga un nuevo producto en la base de datos
+post  http://localhost:8080/api/products/
+content-type: application/json
+{
+    "title": "Titulo de ejemplo",
+    "description":"Descriocion de ejemplo",
+    "price":10,
+    "thumbnails": "sin url",
+    "code":"productEjemplo",
+    "stock":10,
+    "status":true,
+    "category":"categoria ejemplo"
+}
+
+### consegir un carrito determinado 
+get http://localhost:8080/api/cart/64405cc51508a397f7c4f36d
+
+###
+get http://localhost:8080/api/products/
