@@ -4,7 +4,9 @@ import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
 import indexRouter from './routers/index.router.js';
 import { __dirname } from './utils.js';
-import {objetConfig} from './utils/connect.mongo.js'
+import {objetConfig, url} from './utils/connect.mongo.js'
+import session from 'express-session';
+import mongoStore from 'connect-mongo';
 
 const app = express();
 const PORT= 8090;
@@ -19,6 +21,17 @@ app.set('views',__dirname+'/views');
 app.set('view engine','handlebars');
 
 app.use(express.static(__dirname+'/public'))
+
+app.use(session({
+    store:mongoStore.create({
+        mongoUrl: url,
+        mongoOptions: {useNewUrlParser:true, useUnifiedTopology:true },
+        ttl:1500000000
+    }),
+    secret:'secreto',
+    resave: false,
+    saveUninitialized:false
+}))
 
 //Connection to the MongoDB database.
 objetConfig.connectDB()

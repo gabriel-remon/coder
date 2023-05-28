@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import app from '../app.js';
 import ProductManager from '../dao/mongo/products.mongo.js';
-import { validateProductFields,validateStatus,parseProductFromBody, validateObjetID, validateGetProducts } from '../middlewares/validates.js'
+import { validateProductFields, validateStatus, parseProductFromBody, validateObjetID, validateGetProducts } from '../middlewares/validates.js'
 /**
  * Router handling the main route for products.
  */
@@ -15,25 +15,27 @@ const productManager = new ProductManager()
  * the number of products displayed by passing a 'limit' 
  * query parameter.
  */
-ruterProducts.get('/',validateGetProducts, async (req, res) => {
+ruterProducts.get('/', validateGetProducts, async (req, res) => {
   try {
-    const {limit,page,query,sort} = req.query
-    const categorys =await productManager.categorysProductsc()
-    const products = await productManager.getProductsIndex(limit,page,query?{category:query}:{},sort)
+    const { limit, page, query, sort } = req.query
+    const categorys = await productManager.categorysProductsc()
+    const products = await productManager.getProductsIndex(limit, page, query ? { category: query } : {}, sort)
 
-    const product= products.docs.map(element=>{return {
-      title: element.title,
-      description: element.description,
-      price: element.price,
-      thumbnails:element.thumbnails,
-      code: element.code,
-      stock: element.stock,
-      status:element.status,
-      category:element.category,
-      _id: element._id
-    }})
-    
-    const respuesta={
+    const product = products.docs.map(element => {
+      return {
+        title: element.title,
+        description: element.description,
+        price: element.price,
+        thumbnails: element.thumbnails,
+        code: element.code,
+        stock: element.stock,
+        status: element.status,
+        category: element.category,
+        _id: element._id
+      }
+    })
+
+    const respuesta = {
       status: 'success',
       //payload: products.docs,
       payload: product,
@@ -43,20 +45,30 @@ ruterProducts.get('/',validateGetProducts, async (req, res) => {
       page: products.page,
       hasPrevPage: products.hasPrevPage,
       hasNextPage: products.hasNextPage,
-      prevLink: ((products.hasPrevPage)?`${req.protocol}://${req.get('host')}${req.baseUrl}?limit=${limit}&page=${products.prevPage}&sort=${sort}${query?`&query=${query}`:""}`: null),
-      nextLink: ((products.hasNextPage)?`${req.protocol}://${req.get('host')}${req.baseUrl}?limit=${limit}&page=${products.nextPage}&sort=${sort}${query?`&query=${query}`:""}`: null)
+      prevLink: ((products.hasPrevPage) ? `${req.protocol}://${req.get('host')}${req.baseUrl}?limit=${limit}&page=${products.prevPage}&sort=${sort}${query ? `&query=${query}` : ""}` : null),
+      nextLink: ((products.hasNextPage) ? `${req.protocol}://${req.get('host')}${req.baseUrl}?limit=${limit}&page=${products.nextPage}&sort=${sort}${query ? `&query=${query}` : ""}` : null)
     }
-    categorys.map(element=>element=element.replace(/\s+/g, '-'))
-categorys.map(element=>element=element.replace(/\s+/g, '-'))
- 
+    categorys.map(element => element = element.replace(/\s+/g, '-'))
+    categorys.map(element => element = element.replace(/\s+/g, '-'))
+
+    const data = {
+      data: respuesta,
+      categorys: categorys.map(element => element = element.replace(/\s+/g, '-')),
+      limit: product.limit,
+      query: query ? query.replace(/\s+/g, '-') : null
+    }
+    if (req.session.admin) data.admin = req.session.admin;
+    if (req.session.user) {
+      data.user = req.session.user
+      data.nombre = req.session.userData.nombre
+      data.apellido = req.session.userData.apellido
+      data.edad = req.session.userData.edad
+    }
     //return res.status(200).send(JSON.stringify(respuesta))
-    res.status(200).render('products',{data:respuesta, 
-                          categorys: categorys.map(element=>element=element.replace(/\s+/g, '-')),
-                          limit:product.limit,
-                          query:query?query.replace(/\s+/g, '-'):null})
+    res.status(200).render('products', data)
   }
   catch (err) {
-    res.status(500).send(JSON.stringify({status: 'error', payload: err}))
+    res.status(500).send(JSON.stringify({ status: 'error', payload: err }))
   }
 
 })
@@ -67,9 +79,9 @@ categorys.map(element=>element=element.replace(/\s+/g, '-'))
  * parameter and the corresponding object is 
  * returned, if it exists.
  */
-ruterProducts.get('/:id',validateObjetID, async (req, res) => {
+ruterProducts.get('/:id', validateObjetID, async (req, res) => {
   try {
-    
+
     res.status(200).send(await productManager.getProductById(req.params.id))
   }
   catch (err) {
@@ -85,7 +97,7 @@ ruterProducts.get('/:id',validateObjetID, async (req, res) => {
  * The following parameters must be included in the body: 
  * title, description, price, thumbnails, code, stock, status, and category.
  */
-ruterProducts.post('/', validateProductFields,validateStatus,parseProductFromBody, async (req, res) => {
+ruterProducts.post('/', validateProductFields, validateStatus, parseProductFromBody, async (req, res) => {
   try {
     const id = await productManager.addProduct(req.body.product)
 
@@ -107,7 +119,7 @@ ruterProducts.post('/', validateProductFields,validateStatus,parseProductFromBod
  * title, description, price, thumbnails, code, stock, status, 
  * and category.
  */
-ruterProducts.put('/:id',validateObjetID,validateProductFields,validateStatus,parseProductFromBody, async (req, res) => {
+ruterProducts.put('/:id', validateObjetID, validateProductFields, validateStatus, parseProductFromBody, async (req, res) => {
   try {
     const id = await productManager.updateProduct(req.params.id, req.body.product)
 
@@ -128,7 +140,7 @@ ruterProducts.put('/:id',validateObjetID,validateProductFields,validateStatus,pa
  * as a parameter, the deletion is logical by 
  * setting the "status" value to false.
  */
-ruterProducts.delete('/:id',validateObjetID, async (req, res) => {
+ruterProducts.delete('/:id', validateObjetID, async (req, res) => {
   try {
 
     const product = await productManager.deleteProduct(req.params.id)

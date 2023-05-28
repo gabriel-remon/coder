@@ -57,7 +57,7 @@ ruterCarts.get('/:id',validateObjetID, async (req, res) => {
  */
 ruterCarts.post('/:cid/products/:pid',validateCartObjetID, async (req, res) => {
   try {
-    console.log('llegue')
+
     const retorno = await cartManager.addProduc(req.params.pid, req.params.cid)
     
     if (retorno.acknowledged) {

@@ -12,7 +12,16 @@ const productManager = new ProductManager()
  */
 routerListProducts.get('/', async (req, res) => {
     const products = await productManager.getProductsEnable()
-    res.render('realTimeProducts', { products: products })
+    const data =  { products: products }
+    if(req.session.admin)data.admin=req.session.admin;
+    if(req.session.user){
+        data.user=req.session.user
+        data.nombre=req.session.userData.nombre
+        data.apellido=req.session.userData.apellido
+        data.edad=req.session.userData.edad
+    }
+
+    res.render('realTimeProducts', data)
 
     app.io.on('connection', socket => {
         socket.emit('load-list', { products })

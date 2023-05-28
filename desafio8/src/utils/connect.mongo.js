@@ -1,6 +1,6 @@
 import {connect} from 'mongoose'
 
-const url='mongodb+srv://coderHouse:gabriel12@coderhouse.5svhlr3.mongodb.net/eComers'
+export const url='mongodb+srv://coderHouse:gabriel12@coderhouse.5svhlr3.mongodb.net/eComers'
 
 export const objetConfig = {
     connectDB: async ()=>{

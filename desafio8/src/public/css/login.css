@@ -1,0 +1,53 @@
+body {
+  background-color: #f6f6f6;
+  font-family: Arial, sans-serif;
+}
+
+form {
+  background-color: #fff;
+  margin: 0 auto;
+  max-width: 500px;
+  padding: 30px;
+}
+
+h1 {
+  color: #555;
+  font-size: 24px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  width: 100%;
+}
+
+button[type="submit"] {
+  background-color: #3498db;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+}
+
+#register {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#register p {
+  margin-bottom: 10px;
+}
+
+#register-button {
+  background-color: #ec407a;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+}
