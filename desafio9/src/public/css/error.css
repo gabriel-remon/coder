@@ -1,0 +1,39 @@
+body {
+    background-color: #f2f2f2;
+}
+
+.error-container {
+    padding: 30px;
+    margin: 50px auto;
+    max-width: 600px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+    color: #ff3333;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.login-link {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.login-link:hover {
+    background-color: #3e8e41;
+}

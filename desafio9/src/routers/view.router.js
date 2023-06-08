@@ -17,20 +17,10 @@ const productManager = new ProductManager()
  * using the Handlebars template engine.
  */
 routerViews.get('/', async (req, res) => {
-    const products = await productManager.getProductsEnable()
-    let safeProducts = [];
-    products.forEach(element => {
-        safeProducts.push(
-            {title: element.title,
-            description: element.description,
-            price: element.price,
-            stock: element.stock,
-            code: element.code,
-            id: element._id
-            })
-    });
 
-    res.render('index',{products: safeProducts})
+
+
+    res.render('login')
 
 })
 

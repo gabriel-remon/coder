@@ -1,4 +1,21 @@
 <body>
+    <div>
+        <nav class="centered-container"><a href="/session/logout" id="logout-button">Logout</a></nav>
+
+        {{#if user}}
+        <header >
+            <h1 class="centered-container"> Bienvenido {{nombre}} {{apellido}}</h1>
+            <h2 class="centered-container"> con edad de {{edad}} anos, nivel: usuario</h2>
+        </header>
+        {{/if}}
+        {{#if admin}}
+        <header>
+            <h1 class="centered-container">Bienvenido</h1>
+            <h2 class="centered-container">nivel: admin</h2>
+        </header>
+        {{/if}}
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -25,17 +42,17 @@
 
     <div class="container">
 
-            {{#if data.hasPrevPage}}
-            <a id="btnAnterior" class="button" href={{data.prevLink}}> Pagina anterior</a>
-            {{/if}}
-            <span class="text">pagina {{data.page}} de {{data.totalPages}}</span>
-            {{#if data.hasNextPage}}
-            <a id="btnProxima" href={{data.nextLink}} class="button">Proxima pagina</a>
-            {{/if}}
-        
+        {{#if data.hasPrevPage}}
+        <a id="btnAnterior" class="button" href={{data.prevLink}}> Pagina anterior</a>
+        {{/if}}
+        <span class="text">pagina {{data.page}} de {{data.totalPages}}</span>
+        {{#if data.hasNextPage}}
+        <a id="btnProxima" href={{data.nextLink}} class="button">Proxima pagina</a>
+        {{/if}}
+
     </div>
 
-            
+
 
     <div class="container">
         <form id="form-filter">
@@ -52,7 +69,7 @@
                 <option value="1">Menor a mayor</option>
                 <option value="-1">Mayor a menor</option>
             </select>
-            <button class="button" >Buscar</button>
+            <button class="button">Buscar</button>
         </form>
     </div>
 

@@ -1,0 +1,32 @@
+<body>
+        <form id="login-form" method="POST" action="/session/login">
+            <h1>Iniciar sesión</h1>
+            <div>
+                <label for="email">Nombre de usuario:</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+        <div id="register">
+            <p>¿No tienes cuenta?</p>
+            <button id="register-button">Registrarse</button>
+        </div>
+        {{#if error}}
+      <script>
+        Swal.fire({
+          title: 'Email o pasword no validos',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      </script>
+    {{/if}}
+        <script src="/login.js"></script>
+        
+</body>
+
+
+<link href="../css/login.css" rel="stylesheet">
